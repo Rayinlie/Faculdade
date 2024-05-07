@@ -1,0 +1,175 @@
+GABRIEL AMARAL
+
+Arquivos funcs:
+
+Bibliotecas necessárias para o funcionamento do código.
+    #include <stdio.h>
+    #include <stdlib.h>
+    #include <ctype.h>
+    #include <string.h>
+    #include <stdbool.h>
+
+Definição de variáveis constantes para uso na manipulação do buffer de entrada e alocação dos tokens.
+    #define BUFFER_SIZE 1024
+    #define MAX_LEXEME_SIZE 64
+
+Definição dos tipos de Token usados pelo programa, bem como sua numeração já normalizada pelo Bison.
+    typedef enum TokenType{
+        KEYWORD = 258,
+        IDENTIFIER = 259,
+        NUMBER = 260,
+        SYMBOL_PLUS = 261,
+        SYMBOL_MINUS = 262,
+        SYMBOL_MULTIPLY = 263,
+        SYMBOL_DIVIDE = 264,
+        SYMBOL_ASSIGN = 265,
+        SYMBOL_SEMICOLON = 266,
+        SYMBOL_LESS_THAN = 267,
+        SYMBOL_GREATER_THAN = 268,
+        SYMBOL_LEFT_PARENTHESIS = 269,
+        SYMBOL_RIGHT_PARENTHESIS = 270,
+        SYMBOL_EQUAL = 271,
+        SYMBOL_NOT_EQUAL = 272,
+        SYMBOL_LESS_THAN_OR_EQUAL = 273,
+        SYMBOL_GREATER_THAN_OR_EQUAL = 274,
+        ERROR = 275,
+        INT_TYPE = 276,
+        VOID_TYPE = 277,
+        WHILE_OP = 278,
+        IF_OP = 279,
+        ELSE_OP = 280,
+        RETURN_OP = 281,
+        SYMBOL_COMMA = 282,
+        SYMBOL_LEFT_BRACES = 283,
+        SYMBOL_RIGHT_BRACES = 284,
+        SYMBOL_LEFT_BRACKET = 285,
+        SYMBOL_RIGHT_BRACKET = 286,
+        MAIN_OP = 287,
+        NEW_LINE = 288,
+        END_OF_FILE = 289
+    } TokenType;
+
+Definição das palavras reservadas do compilador para a linguagem alvo. 
+    enum keywords {INT, VOID, WHILE, IF, ELSE, RETURN, MAIN};
+
+Definição da estrutura responsavel pelo armazenamento das palavras chave.
+    typedef struct KeywordNode {
+        char* keyword;
+        TokenType type;
+        struct KeywordNode* children[26];
+    } KeywordNode;
+
+Definição da estrutura que ira armazenar o Buffer de entrada.
+    typedef struct {
+        FILE *file;
+        char buffer[BUFFER_SIZE];
+        int position;
+        int line_number;
+    } InputBuffer;
+
+Definição da estrutura que ira armazenar os tokens.
+    typedef struct {
+        TokenType type;
+        char lexeme[MAX_LEXEME_SIZE];
+        int line_number;
+    } Token;
+
+Funções relacionadas a criação, alocação, busca e liberação da memória da estrutura KeywordNode.
+    KeywordNode* createKeywordTree();
+    void freeKeywordTree(KeywordNode* root);
+    KeywordNode* createKeywordNode(char* keyword, TokenType type);
+    void insertKeyword(KeywordNode* root, char* keyword, TokenType type);
+    TokenType searchKeyword(KeywordNode* root, char* keyword);
+
+Funções usadas para manipular o buffer de entrada. 
+    InputBuffer *createInputBuffer(const char *filename);
+    void freeInputBuffer(InputBuffer *buffer);
+    char get_next_char(InputBuffer *buffer);
+    void retract_char(InputBuffer *buffer);
+    void printToken(Token token);
+
+Funções de manipulação dos tokens e estados do programa
+    Token setToken(TokenType type, char* lexeme, int line_number);
+    Token getNextToken(InputBuffer *buffer, KeywordNode* keyword_tree);
+    Token Keyword_State(InputBuffer *buffer, char ch, KeywordNode* keyword_tree);
+    Token Identifier_State(InputBuffer *buffer, char ch );
+    Token Number_State(InputBuffer *buffer, char ch);
+    Token Operator_State(InputBuffer *buffer, char ch);
+    Token Logical_State(InputBuffer *buffer, char ch);
+    Token Logical_Plus_State(InputBuffer *buffer, char ch);
+    Token Assign_State(InputBuffer *buffer, char ch);
+    Token Symbol_State(InputBuffer *buffer, char ch);
+
+Tabela de estados do proograma
+    int tabelaEstados[11][7] = {
+                    //letra	num	operation logical  assign  symbol 	keyword
+  /*0Entry*/         {2,     3,      4,      5,      6,      7,      1},                    
+  /*1Keyword*/       {1,     10,     9,      9,      9,      9,      2},
+  /*2ID*/            {2,     10,     9,      9,      9,      9,      2},
+  /*3num*/           {10,    3,      9,      9,      9,      9,      10},
+  /*4operation*/     {9,     9,      10,     10,     10,     9,      9},
+  /*5logical*/       {9,     9,      9,      6,      6,      9,      9},
+  /*6logicalPlus*/   {9,     9,      9,      10,     10,     9,      9},
+  /*7assign*/        {9,     9,      9,      10,     6,      9,      9},
+  /*8symbol*/        {9,     9,      9,      10,     10,     9,      9},
+  /*9accept*/        {9,     9,      9,      9,      9,      9,      9},
+ /*10error*/         {10,    10,     10,     10,     10,     10,     10}
+};
+
+Tabela de aceitação:
+    bool aceitacao[11] = {false, false, false, false, false, false, false, false, false, true, false};
+
+Variaveis de controle dos estados
+    int currentState = 0;
+    int lastState = 0; 
+
+Funções de manipulação do bufffer:
+    Realiza a leitura do buffer de entrada e faz as primeiras verificações de final de arquivo, espaço em branco
+    e quebra de linha.
+        char get_next_char(InputBuffer *input_buffer) {
+            if (input_buffer->position >= BUFFER_SIZE || input_buffer->buffer[input_buffer->position] == '\0') {
+                int bytes_read = fread(input_buffer->buffer, sizeof(char), BUFFER_SIZE - 1, input_buffer->file);
+                if (bytes_read == 0) {
+                    input_buffer->buffer[0] = '\0';
+                    return EOF;
+                }
+                input_buffer->buffer[bytes_read] = '\0';
+                input_buffer->position = 0;
+            }
+
+            char current_char = input_buffer->buffer[input_buffer->position];
+            if (current_char == '\n' || current_char == '\0') {
+                input_buffer->line_number++;
+            }
+            input_buffer->position++;
+
+            return current_char;
+        }
+
+    Função para recuar uma posição da leitura. Esta função é usada como controle de consumo do buffer de entrada,
+    assim não existe o risco de ler uma posição a mais. 
+        void retract_char(InputBuffer *input_buffer) {
+            if (input_buffer->position > 0) {
+                input_buffer->position--;
+                if (input_buffer->buffer[input_buffer->position] == '\n') {
+                    input_buffer->line_number--;
+                }
+            }
+        }
+
+    Função para liberar a memória doo buffer.
+        void freeInputBuffer(InputBuffer *input_buffer) {
+            fclose(input_buffer->file);
+            free(input_buffer);
+        }
+
+    Função para criação e alocação de memória do buffer de entrada.
+        InputBuffer *createInputBuffer(const char *filename) {
+            InputBuffer *input_buffer = (InputBuffer*)malloc(sizeof(InputBuffer));
+            input_buffer->file = fopen(filename, "r");
+            input_buffer->position = BUFFER_SIZE;
+            input_buffer->line_number = 1;
+            input_buffer->buffer[0] = '\0';
+            return input_buffer;
+        }
+

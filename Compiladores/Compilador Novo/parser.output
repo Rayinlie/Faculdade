@@ -1,0 +1,1260 @@
+Terminals unused in grammar
+
+   TK_KEYWORD
+   TK_ERROR
+   TK_MAIN_OP
+   TK_NEW_LINE
+   TK_END_OF_FILE
+
+
+State 101 conflicts: 1 shift/reduce
+
+
+Grammar
+
+    0 $accept: programa $end
+
+    1 programa: declaracao_lista
+
+    2 declaracao_lista: declaracao_lista declaracao
+    3                 | declaracao
+
+    4 declaracao: var_declaracao
+    5           | fun_declaracao
+
+    6 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_SEMICOLON
+    7               | tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS params TK_SYMBOL_RIGHT_PARENTHESIS composto_decl
+
+    9 tipo_especificador: TK_INT_TYPE
+   10                   | TK_VOID_TYPE
+
+   11 params: param_lista
+   12       | TK_VOID_TYPE
+
+   13 param_lista: param_lista TK_SYMBOL_COMMA param
+   14            | param
+
+   15 param: tipo_especificador TK_IDENTIFIER
+   16      | tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_SYMBOL_RIGHT_BRACKET
+
+   17 composto_decl: TK_SYMBOL_LEFT_BRACES local_declaracoes statement_lista TK_SYMBOL_RIGHT_BRACES
+
+   18 local_declaracoes: local_declaracoes var_declaracao
+   19                  | /* empty */
+
+   20 statement_lista: statement_lista statement
+   21                | /* empty */
+
+   22 statement: expressao_decl
+   23          | composto_decl
+   24          | selecao_decl
+   25          | iteracao_decl
+   26          | retorno_decl
+
+   27 expressao_decl: expressao TK_SYMBOL_SEMICOLON
+   28               | TK_SYMBOL_SEMICOLON
+
+   29 selecao_decl: if_statement
+   30             | if_statement_with_else
+
+   31 if_statement: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP statement
+
+   33 iteracao_decl: TK_WHILE_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+
+   34 retorno_decl: TK_RETURN_OP TK_SYMBOL_SEMICOLON
+   35             | TK_RETURN_OP expressao TK_SYMBOL_SEMICOLON
+
+   36 expressao: var TK_SYMBOL_ASSIGN expressao
+   37          | simples_expressao
+
+   38 var: TK_IDENTIFIER
+   39    | TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET expressao TK_SYMBOL_RIGHT_BRACKET
+
+   40 simples_expressao: soma_expressao relacional soma_expressao
+   41                  | soma_expressao
+
+   42 relacional: TK_SYMBOL_LESS_THAN
+   43           | TK_SYMBOL_GREATER_THAN
+   44           | TK_SYMBOL_EQUAL
+   45           | TK_SYMBOL_NOT_EQUAL
+   46           | TK_SYMBOL_LESS_THAN_OR_EQUAL
+   47           | TK_SYMBOL_GREATER_THAN_OR_EQUAL
+
+   48 soma_expressao: soma_expressao TK_SYMBOL_PLUS termo
+   49               | soma_expressao TK_SYMBOL_MINUS termo
+   50               | termo
+
+   51 termo: termo TK_SYMBOL_MULTIPLY fator
+   52      | termo TK_SYMBOL_DIVIDE fator
+   53      | fator
+
+   54 fator: TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS
+   55      | var
+   56      | ativacao
+   57      | TK_NUMBER
+
+   58 ativacao: TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS args TK_SYMBOL_RIGHT_PARENTHESIS
+
+   59 args: arg_lista
+   60     | /* empty */
+
+   61 arg_lista: arg_lista TK_SYMBOL_COMMA expressao
+   62          | expressao
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+TK_KEYWORD (258)
+TK_IDENTIFIER (259) 6 7 8 15 16 38 39 58
+TK_NUMBER (260) 7 57
+TK_SYMBOL_PLUS (261) 48
+TK_SYMBOL_MINUS (262) 49
+TK_SYMBOL_MULTIPLY (263) 51
+TK_SYMBOL_DIVIDE (264) 52
+TK_SYMBOL_ASSIGN (265) 36
+TK_SYMBOL_SEMICOLON (266) 6 7 27 28 34 35
+TK_SYMBOL_LESS_THAN (267) 42
+TK_SYMBOL_GREATER_THAN (268) 43
+TK_SYMBOL_LEFT_PARENTHESIS (269) 8 31 32 33 54 58
+TK_SYMBOL_RIGHT_PARENTHESIS (270) 8 31 32 33 54 58
+TK_SYMBOL_EQUAL (271) 44
+TK_SYMBOL_NOT_EQUAL (272) 45
+TK_SYMBOL_LESS_THAN_OR_EQUAL (273) 46
+TK_SYMBOL_GREATER_THAN_OR_EQUAL (274) 47
+TK_ERROR (275)
+TK_INT_TYPE (276) 9
+TK_VOID_TYPE (277) 10 12
+TK_WHILE_OP (278) 33
+TK_IF_OP (279) 31 32
+TK_ELSE_OP (280) 32
+TK_RETURN_OP (281) 34 35
+TK_SYMBOL_COMMA (282) 13 61
+TK_SYMBOL_LEFT_BRACES (283) 17
+TK_SYMBOL_RIGHT_BRACES (284) 17
+TK_SYMBOL_LEFT_BRACKET (285) 7 16 39
+TK_SYMBOL_RIGHT_BRACKET (286) 7 16 39
+TK_MAIN_OP (287)
+TK_NEW_LINE (288)
+TK_END_OF_FILE (289)
+
+
+Nonterminals, with rules where they appear
+
+$accept (35)
+    on left: 0
+programa (36)
+    on left: 1, on right: 0
+declaracao_lista (37)
+    on left: 2 3, on right: 1 2
+declaracao (38)
+    on left: 4 5, on right: 2 3
+var_declaracao (39)
+    on left: 6 7, on right: 4 18
+fun_declaracao (40)
+    on left: 8, on right: 5
+tipo_especificador (41)
+    on left: 9 10, on right: 6 7 8 15 16
+params (42)
+    on left: 11 12, on right: 8
+param_lista (43)
+    on left: 13 14, on right: 11 13
+param (44)
+    on left: 15 16, on right: 13 14
+composto_decl (45)
+    on left: 17, on right: 8 23
+local_declaracoes (46)
+    on left: 18 19, on right: 17 18
+statement_lista (47)
+    on left: 20 21, on right: 17 20
+statement (48)
+    on left: 22 23 24 25 26, on right: 20 31 32 33
+expressao_decl (49)
+    on left: 27 28, on right: 22
+selecao_decl (50)
+    on left: 29 30, on right: 24
+if_statement (51)
+    on left: 31, on right: 29
+if_statement_with_else (52)
+    on left: 32, on right: 30
+iteracao_decl (53)
+    on left: 33, on right: 25
+retorno_decl (54)
+    on left: 34 35, on right: 26
+expressao (55)
+    on left: 36 37, on right: 27 31 32 33 35 36 39 54 61 62
+var (56)
+    on left: 38 39, on right: 36 55
+simples_expressao (57)
+    on left: 40 41, on right: 37
+relacional (58)
+    on left: 42 43 44 45 46 47, on right: 40
+soma_expressao (59)
+    on left: 48 49 50, on right: 40 41 48 49
+termo (60)
+    on left: 51 52 53, on right: 48 49 50 51 52
+fator (61)
+    on left: 54 55 56 57, on right: 51 52 53
+ativacao (62)
+    on left: 58, on right: 56
+args (63)
+    on left: 59 60, on right: 58
+arg_lista (64)
+    on left: 61 62, on right: 59 61
+
+
+state 0
+
+    0 $accept: . programa $end
+
+    TK_INT_TYPE   shift, and go to state 1
+    TK_VOID_TYPE  shift, and go to state 2
+
+    programa            go to state 3
+    declaracao_lista    go to state 4
+    declaracao          go to state 5
+    var_declaracao      go to state 6
+    fun_declaracao      go to state 7
+    tipo_especificador  go to state 8
+
+
+state 1
+
+    9 tipo_especificador: TK_INT_TYPE .
+
+    $default  reduce using rule 9 (tipo_especificador)
+
+
+state 2
+
+   10 tipo_especificador: TK_VOID_TYPE .
+
+    $default  reduce using rule 10 (tipo_especificador)
+
+
+state 3
+
+    0 $accept: programa . $end
+
+    $end  shift, and go to state 9
+
+
+state 4
+
+    1 programa: declaracao_lista .
+    2 declaracao_lista: declaracao_lista . declaracao
+
+    TK_INT_TYPE   shift, and go to state 1
+    TK_VOID_TYPE  shift, and go to state 2
+
+    $default  reduce using rule 1 (programa)
+
+    declaracao          go to state 10
+    var_declaracao      go to state 6
+    fun_declaracao      go to state 7
+    tipo_especificador  go to state 8
+
+
+state 5
+
+    3 declaracao_lista: declaracao .
+
+    $default  reduce using rule 3 (declaracao_lista)
+
+
+state 6
+
+    4 declaracao: var_declaracao .
+
+    $default  reduce using rule 4 (declaracao)
+
+
+state 7
+
+    5 declaracao: fun_declaracao .
+
+    $default  reduce using rule 5 (declaracao)
+
+
+state 8
+
+    6 var_declaracao: tipo_especificador . TK_IDENTIFIER TK_SYMBOL_SEMICOLON
+    7               | tipo_especificador . TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+    8 fun_declaracao: tipo_especificador . TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS params TK_SYMBOL_RIGHT_PARENTHESIS composto_decl
+
+    TK_IDENTIFIER  shift, and go to state 11
+
+
+state 9
+
+    0 $accept: programa $end .
+
+    $default  accept
+
+
+state 10
+
+    2 declaracao_lista: declaracao_lista declaracao .
+
+    $default  reduce using rule 2 (declaracao_lista)
+
+
+state 11
+
+    6 var_declaracao: tipo_especificador TK_IDENTIFIER . TK_SYMBOL_SEMICOLON
+    7               | tipo_especificador TK_IDENTIFIER . TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER . TK_SYMBOL_LEFT_PARENTHESIS params TK_SYMBOL_RIGHT_PARENTHESIS composto_decl
+
+    TK_SYMBOL_SEMICOLON         shift, and go to state 12
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 13
+    TK_SYMBOL_LEFT_BRACKET      shift, and go to state 14
+
+
+state 12
+
+    6 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 6 (var_declaracao)
+
+
+state 13
+
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS . params TK_SYMBOL_RIGHT_PARENTHESIS composto_decl
+
+    TK_INT_TYPE   shift, and go to state 1
+    TK_VOID_TYPE  shift, and go to state 15
+
+    tipo_especificador  go to state 16
+    params              go to state 17
+    param_lista         go to state 18
+    param               go to state 19
+
+
+state 14
+
+    7 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET . TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+
+    TK_NUMBER  shift, and go to state 20
+
+
+state 15
+
+   10 tipo_especificador: TK_VOID_TYPE .
+   12 params: TK_VOID_TYPE .
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  reduce using rule 12 (params)
+    $default                     reduce using rule 10 (tipo_especificador)
+
+
+state 16
+
+   15 param: tipo_especificador . TK_IDENTIFIER
+   16      | tipo_especificador . TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_SYMBOL_RIGHT_BRACKET
+
+    TK_IDENTIFIER  shift, and go to state 21
+
+
+state 17
+
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS params . TK_SYMBOL_RIGHT_PARENTHESIS composto_decl
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  shift, and go to state 22
+
+
+state 18
+
+   11 params: param_lista .
+   13 param_lista: param_lista . TK_SYMBOL_COMMA param
+
+    TK_SYMBOL_COMMA  shift, and go to state 23
+
+    $default  reduce using rule 11 (params)
+
+
+state 19
+
+   14 param_lista: param .
+
+    $default  reduce using rule 14 (param_lista)
+
+
+state 20
+
+    7 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER . TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+
+    TK_SYMBOL_RIGHT_BRACKET  shift, and go to state 24
+
+
+state 21
+
+   15 param: tipo_especificador TK_IDENTIFIER .
+   16      | tipo_especificador TK_IDENTIFIER . TK_SYMBOL_LEFT_BRACKET TK_SYMBOL_RIGHT_BRACKET
+
+    TK_SYMBOL_LEFT_BRACKET  shift, and go to state 25
+
+    $default  reduce using rule 15 (param)
+
+
+state 22
+
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS params TK_SYMBOL_RIGHT_PARENTHESIS . composto_decl
+
+    TK_SYMBOL_LEFT_BRACES  shift, and go to state 26
+
+    composto_decl  go to state 27
+
+
+state 23
+
+   13 param_lista: param_lista TK_SYMBOL_COMMA . param
+
+    TK_INT_TYPE   shift, and go to state 1
+    TK_VOID_TYPE  shift, and go to state 2
+
+    tipo_especificador  go to state 16
+    param               go to state 28
+
+
+state 24
+
+    7 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET . TK_SYMBOL_SEMICOLON
+
+    TK_SYMBOL_SEMICOLON  shift, and go to state 29
+
+
+state 25
+
+   16 param: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET . TK_SYMBOL_RIGHT_BRACKET
+
+    TK_SYMBOL_RIGHT_BRACKET  shift, and go to state 30
+
+
+state 26
+
+   17 composto_decl: TK_SYMBOL_LEFT_BRACES . local_declaracoes statement_lista TK_SYMBOL_RIGHT_BRACES
+
+    $default  reduce using rule 19 (local_declaracoes)
+
+    local_declaracoes  go to state 31
+
+
+state 27
+
+    8 fun_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS params TK_SYMBOL_RIGHT_PARENTHESIS composto_decl .
+
+    $default  reduce using rule 8 (fun_declaracao)
+
+
+state 28
+
+   13 param_lista: param_lista TK_SYMBOL_COMMA param .
+
+    $default  reduce using rule 13 (param_lista)
+
+
+state 29
+
+    7 var_declaracao: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 7 (var_declaracao)
+
+
+state 30
+
+   16 param: tipo_especificador TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_SYMBOL_RIGHT_BRACKET .
+
+    $default  reduce using rule 16 (param)
+
+
+state 31
+
+   17 composto_decl: TK_SYMBOL_LEFT_BRACES local_declaracoes . statement_lista TK_SYMBOL_RIGHT_BRACES
+   18 local_declaracoes: local_declaracoes . var_declaracao
+
+    TK_INT_TYPE   shift, and go to state 1
+    TK_VOID_TYPE  shift, and go to state 2
+
+    $default  reduce using rule 21 (statement_lista)
+
+    var_declaracao      go to state 32
+    tipo_especificador  go to state 33
+    statement_lista     go to state 34
+
+
+state 32
+
+   18 local_declaracoes: local_declaracoes var_declaracao .
+
+    $default  reduce using rule 18 (local_declaracoes)
+
+
+state 33
+
+    6 var_declaracao: tipo_especificador . TK_IDENTIFIER TK_SYMBOL_SEMICOLON
+    7               | tipo_especificador . TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+
+    TK_IDENTIFIER  shift, and go to state 35
+
+
+state 34
+
+   17 composto_decl: TK_SYMBOL_LEFT_BRACES local_declaracoes statement_lista . TK_SYMBOL_RIGHT_BRACES
+   20 statement_lista: statement_lista . statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_SEMICOLON         shift, and go to state 38
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+    TK_WHILE_OP                 shift, and go to state 40
+    TK_IF_OP                    shift, and go to state 41
+    TK_RETURN_OP                shift, and go to state 42
+    TK_SYMBOL_LEFT_BRACES       shift, and go to state 26
+    TK_SYMBOL_RIGHT_BRACES      shift, and go to state 43
+
+    composto_decl           go to state 44
+    statement               go to state 45
+    expressao_decl          go to state 46
+    selecao_decl            go to state 47
+    if_statement            go to state 48
+    if_statement_with_else  go to state 49
+    iteracao_decl           go to state 50
+    retorno_decl            go to state 51
+    expressao               go to state 52
+    var                     go to state 53
+    simples_expressao       go to state 54
+    soma_expressao          go to state 55
+    termo                   go to state 56
+    fator                   go to state 57
+    ativacao                go to state 58
+
+
+state 35
+
+    6 var_declaracao: tipo_especificador TK_IDENTIFIER . TK_SYMBOL_SEMICOLON
+    7               | tipo_especificador TK_IDENTIFIER . TK_SYMBOL_LEFT_BRACKET TK_NUMBER TK_SYMBOL_RIGHT_BRACKET TK_SYMBOL_SEMICOLON
+
+    TK_SYMBOL_SEMICOLON     shift, and go to state 12
+    TK_SYMBOL_LEFT_BRACKET  shift, and go to state 14
+
+
+state 36
+
+   38 var: TK_IDENTIFIER .
+   39    | TK_IDENTIFIER . TK_SYMBOL_LEFT_BRACKET expressao TK_SYMBOL_RIGHT_BRACKET
+   58 ativacao: TK_IDENTIFIER . TK_SYMBOL_LEFT_PARENTHESIS args TK_SYMBOL_RIGHT_PARENTHESIS
+
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 59
+    TK_SYMBOL_LEFT_BRACKET      shift, and go to state 60
+
+    $default  reduce using rule 38 (var)
+
+
+state 37
+
+   57 fator: TK_NUMBER .
+
+    $default  reduce using rule 57 (fator)
+
+
+state 38
+
+   28 expressao_decl: TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 28 (expressao_decl)
+
+
+state 39
+
+   54 fator: TK_SYMBOL_LEFT_PARENTHESIS . expressao TK_SYMBOL_RIGHT_PARENTHESIS
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 61
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 40
+
+   33 iteracao_decl: TK_WHILE_OP . TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 62
+
+
+state 41
+
+   31 if_statement: TK_IF_OP . TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+   32 if_statement_with_else: TK_IF_OP . TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP statement
+
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 63
+
+
+state 42
+
+   34 retorno_decl: TK_RETURN_OP . TK_SYMBOL_SEMICOLON
+   35             | TK_RETURN_OP . expressao TK_SYMBOL_SEMICOLON
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_SEMICOLON         shift, and go to state 64
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 65
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 43
+
+   17 composto_decl: TK_SYMBOL_LEFT_BRACES local_declaracoes statement_lista TK_SYMBOL_RIGHT_BRACES .
+
+    $default  reduce using rule 17 (composto_decl)
+
+
+state 44
+
+   23 statement: composto_decl .
+
+    $default  reduce using rule 23 (statement)
+
+
+state 45
+
+   20 statement_lista: statement_lista statement .
+
+    $default  reduce using rule 20 (statement_lista)
+
+
+state 46
+
+   22 statement: expressao_decl .
+
+    $default  reduce using rule 22 (statement)
+
+
+state 47
+
+   24 statement: selecao_decl .
+
+    $default  reduce using rule 24 (statement)
+
+
+state 48
+
+   29 selecao_decl: if_statement .
+
+    $default  reduce using rule 29 (selecao_decl)
+
+
+state 49
+
+   30 selecao_decl: if_statement_with_else .
+
+    $default  reduce using rule 30 (selecao_decl)
+
+
+state 50
+
+   25 statement: iteracao_decl .
+
+    $default  reduce using rule 25 (statement)
+
+
+state 51
+
+   26 statement: retorno_decl .
+
+    $default  reduce using rule 26 (statement)
+
+
+state 52
+
+   27 expressao_decl: expressao . TK_SYMBOL_SEMICOLON
+
+    TK_SYMBOL_SEMICOLON  shift, and go to state 66
+
+
+state 53
+
+   36 expressao: var . TK_SYMBOL_ASSIGN expressao
+   55 fator: var .
+
+    TK_SYMBOL_ASSIGN  shift, and go to state 67
+
+    $default  reduce using rule 55 (fator)
+
+
+state 54
+
+   37 expressao: simples_expressao .
+
+    $default  reduce using rule 37 (expressao)
+
+
+state 55
+
+   40 simples_expressao: soma_expressao . relacional soma_expressao
+   41                  | soma_expressao .
+   48 soma_expressao: soma_expressao . TK_SYMBOL_PLUS termo
+   49               | soma_expressao . TK_SYMBOL_MINUS termo
+
+    TK_SYMBOL_PLUS                   shift, and go to state 68
+    TK_SYMBOL_MINUS                  shift, and go to state 69
+    TK_SYMBOL_LESS_THAN              shift, and go to state 70
+    TK_SYMBOL_GREATER_THAN           shift, and go to state 71
+    TK_SYMBOL_EQUAL                  shift, and go to state 72
+    TK_SYMBOL_NOT_EQUAL              shift, and go to state 73
+    TK_SYMBOL_LESS_THAN_OR_EQUAL     shift, and go to state 74
+    TK_SYMBOL_GREATER_THAN_OR_EQUAL  shift, and go to state 75
+
+    $default  reduce using rule 41 (simples_expressao)
+
+    relacional  go to state 76
+
+
+state 56
+
+   50 soma_expressao: termo .
+   51 termo: termo . TK_SYMBOL_MULTIPLY fator
+   52      | termo . TK_SYMBOL_DIVIDE fator
+
+    TK_SYMBOL_MULTIPLY  shift, and go to state 77
+    TK_SYMBOL_DIVIDE    shift, and go to state 78
+
+    $default  reduce using rule 50 (soma_expressao)
+
+
+state 57
+
+   53 termo: fator .
+
+    $default  reduce using rule 53 (termo)
+
+
+state 58
+
+   56 fator: ativacao .
+
+    $default  reduce using rule 56 (fator)
+
+
+state 59
+
+   58 ativacao: TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS . args TK_SYMBOL_RIGHT_PARENTHESIS
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    $default  reduce using rule 60 (args)
+
+    expressao          go to state 79
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+    args               go to state 80
+    arg_lista          go to state 81
+
+
+state 60
+
+   39 var: TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET . expressao TK_SYMBOL_RIGHT_BRACKET
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 82
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 61
+
+   54 fator: TK_SYMBOL_LEFT_PARENTHESIS expressao . TK_SYMBOL_RIGHT_PARENTHESIS
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  shift, and go to state 83
+
+
+state 62
+
+   33 iteracao_decl: TK_WHILE_OP TK_SYMBOL_LEFT_PARENTHESIS . expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 84
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 63
+
+   31 if_statement: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS . expressao TK_SYMBOL_RIGHT_PARENTHESIS statement
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS . expressao TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 85
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 64
+
+   34 retorno_decl: TK_RETURN_OP TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 34 (retorno_decl)
+
+
+state 65
+
+   35 retorno_decl: TK_RETURN_OP expressao . TK_SYMBOL_SEMICOLON
+
+    TK_SYMBOL_SEMICOLON  shift, and go to state 86
+
+
+state 66
+
+   27 expressao_decl: expressao TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 27 (expressao_decl)
+
+
+state 67
+
+   36 expressao: var TK_SYMBOL_ASSIGN . expressao
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 87
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 68
+
+   48 soma_expressao: soma_expressao TK_SYMBOL_PLUS . termo
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    var       go to state 88
+    termo     go to state 89
+    fator     go to state 57
+    ativacao  go to state 58
+
+
+state 69
+
+   49 soma_expressao: soma_expressao TK_SYMBOL_MINUS . termo
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    var       go to state 88
+    termo     go to state 90
+    fator     go to state 57
+    ativacao  go to state 58
+
+
+state 70
+
+   42 relacional: TK_SYMBOL_LESS_THAN .
+
+    $default  reduce using rule 42 (relacional)
+
+
+state 71
+
+   43 relacional: TK_SYMBOL_GREATER_THAN .
+
+    $default  reduce using rule 43 (relacional)
+
+
+state 72
+
+   44 relacional: TK_SYMBOL_EQUAL .
+
+    $default  reduce using rule 44 (relacional)
+
+
+state 73
+
+   45 relacional: TK_SYMBOL_NOT_EQUAL .
+
+    $default  reduce using rule 45 (relacional)
+
+
+state 74
+
+   46 relacional: TK_SYMBOL_LESS_THAN_OR_EQUAL .
+
+    $default  reduce using rule 46 (relacional)
+
+
+state 75
+
+   47 relacional: TK_SYMBOL_GREATER_THAN_OR_EQUAL .
+
+    $default  reduce using rule 47 (relacional)
+
+
+state 76
+
+   40 simples_expressao: soma_expressao relacional . soma_expressao
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    var             go to state 88
+    soma_expressao  go to state 91
+    termo           go to state 56
+    fator           go to state 57
+    ativacao        go to state 58
+
+
+state 77
+
+   51 termo: termo TK_SYMBOL_MULTIPLY . fator
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    var       go to state 88
+    fator     go to state 92
+    ativacao  go to state 58
+
+
+state 78
+
+   52 termo: termo TK_SYMBOL_DIVIDE . fator
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    var       go to state 88
+    fator     go to state 93
+    ativacao  go to state 58
+
+
+state 79
+
+   62 arg_lista: expressao .
+
+    $default  reduce using rule 62 (arg_lista)
+
+
+state 80
+
+   58 ativacao: TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS args . TK_SYMBOL_RIGHT_PARENTHESIS
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  shift, and go to state 94
+
+
+state 81
+
+   59 args: arg_lista .
+   61 arg_lista: arg_lista . TK_SYMBOL_COMMA expressao
+
+    TK_SYMBOL_COMMA  shift, and go to state 95
+
+    $default  reduce using rule 59 (args)
+
+
+state 82
+
+   39 var: TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET expressao . TK_SYMBOL_RIGHT_BRACKET
+
+    TK_SYMBOL_RIGHT_BRACKET  shift, and go to state 96
+
+
+state 83
+
+   54 fator: TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 54 (fator)
+
+
+state 84
+
+   33 iteracao_decl: TK_WHILE_OP TK_SYMBOL_LEFT_PARENTHESIS expressao . TK_SYMBOL_RIGHT_PARENTHESIS statement
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  shift, and go to state 97
+
+
+state 85
+
+   31 if_statement: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao . TK_SYMBOL_RIGHT_PARENTHESIS statement
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao . TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP statement
+
+    TK_SYMBOL_RIGHT_PARENTHESIS  shift, and go to state 98
+
+
+state 86
+
+   35 retorno_decl: TK_RETURN_OP expressao TK_SYMBOL_SEMICOLON .
+
+    $default  reduce using rule 35 (retorno_decl)
+
+
+state 87
+
+   36 expressao: var TK_SYMBOL_ASSIGN expressao .
+
+    $default  reduce using rule 36 (expressao)
+
+
+state 88
+
+   55 fator: var .
+
+    $default  reduce using rule 55 (fator)
+
+
+state 89
+
+   48 soma_expressao: soma_expressao TK_SYMBOL_PLUS termo .
+   51 termo: termo . TK_SYMBOL_MULTIPLY fator
+   52      | termo . TK_SYMBOL_DIVIDE fator
+
+    TK_SYMBOL_MULTIPLY  shift, and go to state 77
+    TK_SYMBOL_DIVIDE    shift, and go to state 78
+
+    $default  reduce using rule 48 (soma_expressao)
+
+
+state 90
+
+   49 soma_expressao: soma_expressao TK_SYMBOL_MINUS termo .
+   51 termo: termo . TK_SYMBOL_MULTIPLY fator
+   52      | termo . TK_SYMBOL_DIVIDE fator
+
+    TK_SYMBOL_MULTIPLY  shift, and go to state 77
+    TK_SYMBOL_DIVIDE    shift, and go to state 78
+
+    $default  reduce using rule 49 (soma_expressao)
+
+
+state 91
+
+   40 simples_expressao: soma_expressao relacional soma_expressao .
+   48 soma_expressao: soma_expressao . TK_SYMBOL_PLUS termo
+   49               | soma_expressao . TK_SYMBOL_MINUS termo
+
+    TK_SYMBOL_PLUS   shift, and go to state 68
+    TK_SYMBOL_MINUS  shift, and go to state 69
+
+    $default  reduce using rule 40 (simples_expressao)
+
+
+state 92
+
+   51 termo: termo TK_SYMBOL_MULTIPLY fator .
+
+    $default  reduce using rule 51 (termo)
+
+
+state 93
+
+   52 termo: termo TK_SYMBOL_DIVIDE fator .
+
+    $default  reduce using rule 52 (termo)
+
+
+state 94
+
+   58 ativacao: TK_IDENTIFIER TK_SYMBOL_LEFT_PARENTHESIS args TK_SYMBOL_RIGHT_PARENTHESIS .
+
+    $default  reduce using rule 58 (ativacao)
+
+
+state 95
+
+   61 arg_lista: arg_lista TK_SYMBOL_COMMA . expressao
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+
+    expressao          go to state 99
+    var                go to state 53
+    simples_expressao  go to state 54
+    soma_expressao     go to state 55
+    termo              go to state 56
+    fator              go to state 57
+    ativacao           go to state 58
+
+
+state 96
+
+   39 var: TK_IDENTIFIER TK_SYMBOL_LEFT_BRACKET expressao TK_SYMBOL_RIGHT_BRACKET .
+
+    $default  reduce using rule 39 (var)
+
+
+state 97
+
+   33 iteracao_decl: TK_WHILE_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS . statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_SEMICOLON         shift, and go to state 38
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+    TK_WHILE_OP                 shift, and go to state 40
+    TK_IF_OP                    shift, and go to state 41
+    TK_RETURN_OP                shift, and go to state 42
+    TK_SYMBOL_LEFT_BRACES       shift, and go to state 26
+
+    composto_decl           go to state 44
+    statement               go to state 100
+    expressao_decl          go to state 46
+    selecao_decl            go to state 47
+    if_statement            go to state 48
+    if_statement_with_else  go to state 49
+    iteracao_decl           go to state 50
+    retorno_decl            go to state 51
+    expressao               go to state 52
+    var                     go to state 53
+    simples_expressao       go to state 54
+    soma_expressao          go to state 55
+    termo                   go to state 56
+    fator                   go to state 57
+    ativacao                go to state 58
+
+
+state 98
+
+   31 if_statement: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS . statement
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS . statement TK_ELSE_OP statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_SEMICOLON         shift, and go to state 38
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+    TK_WHILE_OP                 shift, and go to state 40
+    TK_IF_OP                    shift, and go to state 41
+    TK_RETURN_OP                shift, and go to state 42
+    TK_SYMBOL_LEFT_BRACES       shift, and go to state 26
+
+    composto_decl           go to state 44
+    statement               go to state 101
+    expressao_decl          go to state 46
+    selecao_decl            go to state 47
+    if_statement            go to state 48
+    if_statement_with_else  go to state 49
+    iteracao_decl           go to state 50
+    retorno_decl            go to state 51
+    expressao               go to state 52
+    var                     go to state 53
+    simples_expressao       go to state 54
+    soma_expressao          go to state 55
+    termo                   go to state 56
+    fator                   go to state 57
+    ativacao                go to state 58
+
+
+state 99
+
+   61 arg_lista: arg_lista TK_SYMBOL_COMMA expressao .
+
+    $default  reduce using rule 61 (arg_lista)
+
+
+state 100
+
+   33 iteracao_decl: TK_WHILE_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement .
+
+    $default  reduce using rule 33 (iteracao_decl)
+
+
+state 101
+
+   31 if_statement: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement .
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement . TK_ELSE_OP statement
+
+    TK_ELSE_OP  shift, and go to state 102
+
+    TK_ELSE_OP  [reduce using rule 31 (if_statement)]
+    $default    reduce using rule 31 (if_statement)
+
+
+state 102
+
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP . statement
+
+    TK_IDENTIFIER               shift, and go to state 36
+    TK_NUMBER                   shift, and go to state 37
+    TK_SYMBOL_SEMICOLON         shift, and go to state 38
+    TK_SYMBOL_LEFT_PARENTHESIS  shift, and go to state 39
+    TK_WHILE_OP                 shift, and go to state 40
+    TK_IF_OP                    shift, and go to state 41
+    TK_RETURN_OP                shift, and go to state 42
+    TK_SYMBOL_LEFT_BRACES       shift, and go to state 26
+
+    composto_decl           go to state 44
+    statement               go to state 103
+    expressao_decl          go to state 46
+    selecao_decl            go to state 47
+    if_statement            go to state 48
+    if_statement_with_else  go to state 49
+    iteracao_decl           go to state 50
+    retorno_decl            go to state 51
+    expressao               go to state 52
+    var                     go to state 53
+    simples_expressao       go to state 54
+    soma_expressao          go to state 55
+    termo                   go to state 56
+    fator                   go to state 57
+    ativacao                go to state 58
+
+
+state 103
+
+   32 if_statement_with_else: TK_IF_OP TK_SYMBOL_LEFT_PARENTHESIS expressao TK_SYMBOL_RIGHT_PARENTHESIS statement TK_ELSE_OP statement .
+
+    $default  reduce using rule 32 (if_statement_with_else)
